@@ -1,0 +1,38 @@
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Node / frontend build output
+node_modules/
+product-poc/frontend/node_modules/
+product-poc/frontend/dist/
+
+# Local env and secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Uploaded batches and generated analysis artifacts
+*.zip
+*.pdf
+*.docx
+*.csv
+*.json.txt
+output/
+product-poc/server_data/
+product-poc/backend/server_data/
+站前模D-20260505-results/
+
+# Local logs and temporary files
+*.log
+tmp/
+temp/

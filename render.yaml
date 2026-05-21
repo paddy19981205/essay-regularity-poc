@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: essay-regularity-poc
+    env: docker
+    plan: starter
+    autoDeploy: false
+    disk:
+      name: essay-regularity-runs
+      mountPath: /data
+      sizeGB: 10
+    envVars:
+      - key: POC_USERNAME
+        value: admin
+      - key: POC_PASSWORD
+        sync: false
+      - key: POC_COOKIE_SECURE
+        value: "1"
+      - key: POC_RUNS_DIR
+        value: /data/runs
+      - key: MANUAL_ANALYSIS_MODE
+        value: auto
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash-lite
+      - key: GEMINI_API_KEY
+        sync: false

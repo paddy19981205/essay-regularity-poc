@@ -1,0 +1,12 @@
+{
+  "name": "essay-correction-poc",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "serve:backend": "python3 backend/server.py 8787",
+    "build": "npm --prefix frontend run build",
+    "preview:frontend": "npm --prefix frontend run preview",
+    "serve:poc": "npm run build && npm run serve:backend"
+  }
+}
