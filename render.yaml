@@ -13,6 +13,8 @@ services:
         value: admin
       - key: POC_PASSWORD
         sync: false
+      - key: POC_USERS
+        sync: false
       - key: POC_COOKIE_SECURE
         value: "1"
       - key: POC_RUNS_DIR

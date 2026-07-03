@@ -38,6 +38,7 @@ npm run serve:poc
 | --- | --- | --- |
 | `POC_USERNAME` | `admin` 或自訂 | 後台登入帳號 |
 | `POC_PASSWORD` | 強密碼 | 後台登入密碼，正式環境不要用預設值 |
+| `POC_USERS` | `admin:強密碼,SJ:強密碼` | 多帳號登入清單；若設定此值，系統會使用這份清單 |
 | `POC_COOKIE_SECURE` | `1` | HTTPS 環境請設為 `1` |
 | `POC_RUNS_DIR` | `/data/runs` | 上傳 ZIP、分析結果、DOCX/CSV/JSON 歷史資料 |
 | `MANUAL_ANALYSIS_MODE` | `auto` | 有 `GEMINI_API_KEY` 時使用 AI 歸納，否則退回規則式 |
@@ -52,6 +53,7 @@ docker build -t essay-regularity-poc .
 docker run --rm -p 8787:8787 \
   -e POC_USERNAME=admin \
   -e POC_PASSWORD='change-me' \
+  -e POC_USERS='admin:change-me,SJ:change-me-too' \
   -e POC_COOKIE_SECURE=0 \
   -e POC_RUNS_DIR=/data/runs \
   -e MANUAL_ANALYSIS_MODE=auto \
@@ -76,6 +78,7 @@ http://127.0.0.1:8787/
 4. 設定環境變數：
    - `POC_USERNAME`
    - `POC_PASSWORD`
+   - `POC_USERS`（需要多帳號時設定）
    - `POC_COOKIE_SECURE=1`
    - `POC_RUNS_DIR=/data/runs`
    - `MANUAL_ANALYSIS_MODE=auto`

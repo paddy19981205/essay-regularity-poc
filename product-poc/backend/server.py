@@ -32,6 +32,7 @@ MAX_UPLOAD_BYTES = 2 * 1024 * 1024 * 1024
 UPLOAD_CHUNK_SIZE = 4 * 1024 * 1024
 AUTH_USERNAME = os.environ.get("POC_USERNAME", "admin")
 AUTH_PASSWORD = os.environ.get("POC_PASSWORD", "essay2026")
+AUTH_USERS_RAW = os.environ.get("POC_USERS", "")
 SESSION_COOKIE = "essay_poc_session"
 SESSION_MAX_AGE = 60 * 60 * 12
 COOKIE_SECURE = os.environ.get("POC_COOKIE_SECURE", "").lower() in {"1", "true", "yes"}
@@ -46,6 +47,24 @@ INDEX_LOCK = threading.Lock()
 ANALYSIS_SEMAPHORE = threading.Semaphore(1)
 SESSION_LOCK = threading.Lock()
 SESSIONS: dict[str, dict] = {}
+
+
+def parse_auth_users(raw: str) -> dict[str, str]:
+    users: dict[str, str] = {}
+    for chunk in (raw or "").split(","):
+        if ":" not in chunk:
+            continue
+        username, password = chunk.split(":", 1)
+        username = username.strip()
+        password = password.strip()
+        if username and password:
+            users[username] = password
+    if not users:
+        users[AUTH_USERNAME] = AUTH_PASSWORD
+    return users
+
+
+AUTH_USERS = parse_auth_users(AUTH_USERS_RAW)
 
 
 def now_iso() -> str:
@@ -95,6 +114,14 @@ def clear_session_cookie() -> str:
 
 def constant_time_text_equals(left: str, right: str) -> bool:
     return hmac.compare_digest(left.encode("utf-8"), right.encode("utf-8"))
+
+
+def authenticate_user(username: str, password: str) -> bool:
+    expected_password = AUTH_USERS.get(username)
+    if expected_password is None:
+        constant_time_text_equals(password, "")
+        return False
+    return constant_time_text_equals(password, expected_password)
 
 
 def make_progress(stage: str, current: int = 0, total: int = 0, message: str = "", current_file: str = "") -> dict:
@@ -430,7 +457,7 @@ class Handler(BaseHTTPRequestHandler):
             payload = self.read_json_body()
             username = str(payload.get("username", ""))
             password = str(payload.get("password", ""))
-            if constant_time_text_equals(username, AUTH_USERNAME) and constant_time_text_equals(password, AUTH_PASSWORD):
+            if authenticate_user(username, password):
                 token = make_session(username)
                 self.send_json(
                     {"authenticated": True, "username": username},
